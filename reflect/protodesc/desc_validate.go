@@ -326,20 +326,19 @@ func checkValidMap(fd protoreflect.FieldDescriptor) error {
 	switch {
 	case md == nil || !md.IsMapEntry():
 		return nil
-	// disabled for protobufjs
-	//case fd.FullName().Parent() != md.FullName().Parent():
-	//	return errors.New("message and field must be declared in the same scope")
-	// disabled for protobufjs
-	//case md.Name() != protoreflect.Name(strs.MapEntryName(string(fd.Name()))):
-	//	return errors.New("incorrect implicit map entry name")
-	case fd.Cardinality() != protoreflect.Repeated:
-		return errors.New("field must be repeated")
-	case md.Fields().Len() != 2:
-		return errors.New("message must have exactly two fields")
-	case md.ExtensionRanges().Len() > 0:
-		return errors.New("message must not have any extension ranges")
-	case md.Enums().Len()+md.Messages().Len()+md.Extensions().Len() > 0:
-		return errors.New("message must not have any nested declarations")
+		// disabled for protobufjs
+		//case fd.FullName().Parent() != md.FullName().Parent():
+		//	return errors.New("message and field must be declared in the same scope")
+		//case md.Name() != protoreflect.Name(strs.MapEntryName(string(fd.Name()))):
+		//	return errors.New("incorrect implicit map entry name")
+		//case fd.Cardinality() != protoreflect.Repeated:
+		//	return errors.New("field must be repeated")
+		//case md.Fields().Len() != 2:
+		//	return errors.New("message must have exactly two fields")
+		//case md.ExtensionRanges().Len() > 0:
+		//	return errors.New("message must not have any extension ranges")
+		//case md.Enums().Len()+md.Messages().Len()+md.Extensions().Len() > 0:
+		//	return errors.New("message must not have any nested declarations")
 	}
 	kf := md.Fields().Get(0)
 	vf := md.Fields().Get(1)
