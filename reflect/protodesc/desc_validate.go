@@ -46,9 +46,10 @@ func validateEnumDeclarations(es []filedesc.Enum, eds []*descriptorpb.EnumDescri
 			return errors.New("enum %q allows aliases, but none were found", e.FullName())
 		}
 		if !e.IsClosed() {
-			if v := e.Values().Get(0); v.Number() != 0 {
-				return errors.New("enum %q using open semantics must have zero number for the first value", v.FullName())
-			}
+			// disabled for protobufjs
+			//if v := e.Values().Get(0); v.Number() != 0 {
+			//	return errors.New("enum %q using open semantics must have zero number for the first value", v.FullName())
+			//}
 			// Verify that value names in open enums do not conflict if the
 			// case-insensitive prefix is removed.
 			// See protoc v3.8.0: src/google/protobuf/descriptor.cc:4991-5055
@@ -91,9 +92,10 @@ func validateMessageDeclarations(file *filedesc.File, ms []filedesc.Message, mds
 		if err := m.L2.ReservedNames.CheckValid(); err != nil {
 			return errors.New("message %q reserved names has %v", m.FullName(), err)
 		}
-		if err := m.L2.ReservedRanges.CheckValid(isMessageSet); err != nil {
-			return errors.New("message %q reserved ranges has %v", m.FullName(), err)
-		}
+		// disabled for protobufjs
+		//if err := m.L2.ReservedRanges.CheckValid(isMessageSet); err != nil {
+		//	return errors.New("message %q reserved ranges has %v", m.FullName(), err)
+		//}
 		if err := m.L2.ExtensionRanges.CheckValid(isMessageSet); err != nil {
 			return errors.New("message %q extension ranges has %v", m.FullName(), err)
 		}
@@ -112,11 +114,12 @@ func validateMessageDeclarations(file *filedesc.File, ms []filedesc.Message, mds
 		if isMessageSet && (isProto3 || m.Fields().Len() > 0 || m.ExtensionRanges().Len() == 0) {
 			return errors.New("message %q is an invalid proto1 MessageSet", m.FullName())
 		}
-		if isProto3 {
-			if m.ExtensionRanges().Len() > 0 {
-				return errors.New("message %q using proto3 semantics cannot have extension ranges", m.FullName())
-			}
-		}
+		// disabled for protobufjs
+		//if isProto3 {
+		//	if m.ExtensionRanges().Len() > 0 {
+		//		return errors.New("message %q using proto3 semantics cannot have extension ranges", m.FullName())
+		//	}
+		//}
 
 		for j, fd := range md.GetField() {
 			f := &m.L2.Fields.List[j]
@@ -158,14 +161,15 @@ func validateMessageDeclarations(file *filedesc.File, ms []filedesc.Message, mds
 			if err := checkValidMap(f); err != nil {
 				return errors.New("message field %q is an invalid map: %v", f.FullName(), err)
 			}
-			if isProto3 {
-				if f.Cardinality() == protoreflect.Required {
-					return errors.New("message field %q using proto3 semantics cannot be required", f.FullName())
-				}
-				if f.Enum() != nil && !f.Enum().IsPlaceholder() && f.Enum().IsClosed() {
-					return errors.New("message field %q using proto3 semantics may only depend on open enums", f.FullName())
-				}
-			}
+			// disabled for protobufjs
+			//if isProto3 {
+			//	if f.Cardinality() == protoreflect.Required {
+			//		return errors.New("message field %q using proto3 semantics cannot be required", f.FullName())
+			//	}
+			//	if f.Enum() != nil && !f.Enum().IsPlaceholder() && f.Enum().IsClosed() {
+			//		return errors.New("message field %q using proto3 semantics may only depend on open enums", f.FullName())
+			//	}
+			//}
 			if f.Cardinality() == protoreflect.Optional && !f.HasPresence() && f.Enum() != nil && !f.Enum().IsPlaceholder() && f.Enum().IsClosed() {
 				return errors.New("message field %q with implicit presence may only use open enums", f.FullName())
 			}
@@ -323,8 +327,9 @@ func checkValidMap(fd protoreflect.FieldDescriptor) error {
 		return nil
 	case fd.FullName().Parent() != md.FullName().Parent():
 		return errors.New("message and field must be declared in the same scope")
-	case md.Name() != protoreflect.Name(strs.MapEntryName(string(fd.Name()))):
-		return errors.New("incorrect implicit map entry name")
+	// disabled for protobufjs
+	//case md.Name() != protoreflect.Name(strs.MapEntryName(string(fd.Name()))):
+	//	return errors.New("incorrect implicit map entry name")
 	case fd.Cardinality() != protoreflect.Repeated:
 		return errors.New("field must be repeated")
 	case md.Fields().Len() != 2:
@@ -352,8 +357,9 @@ func checkValidMap(fd protoreflect.FieldDescriptor) error {
 	default:
 		return errors.New("invalid key kind: %v", kf.Kind())
 	}
-	if e := vf.Enum(); e != nil && e.Values().Len() > 0 && e.Values().Get(0).Number() != 0 {
-		return errors.New("map enum value must have zero number for the first value")
-	}
+	// disabled for protobufjs
+	//if e := vf.Enum(); e != nil && e.Values().Len() > 0 && e.Values().Get(0).Number() != 0 {
+	//	return errors.New("map enum value must have zero number for the first value")
+	//}
 	return nil
 }
