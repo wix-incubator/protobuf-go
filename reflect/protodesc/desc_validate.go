@@ -306,8 +306,9 @@ func checkValidGroup(f *filedesc.File, fd protoreflect.FieldDescriptor) error {
 	}
 	if f.L1.Edition < fromEditionProto(descriptorpb.Edition_EDITION_2023) {
 		switch {
-		case fd.FullName().Parent() != md.FullName().Parent():
-			return errors.New("message and field must be declared in the same scope")
+		// disabled for protobufjs
+		//case fd.FullName().Parent() != md.FullName().Parent():
+		//	return errors.New("message and field must be declared in the same scope")
 		case !unicode.IsUpper(rune(md.Name()[0])):
 			return errors.New("message name must start with an uppercase")
 		case fd.Name() != protoreflect.Name(strings.ToLower(string(md.Name()))):
@@ -325,8 +326,9 @@ func checkValidMap(fd protoreflect.FieldDescriptor) error {
 	switch {
 	case md == nil || !md.IsMapEntry():
 		return nil
-	case fd.FullName().Parent() != md.FullName().Parent():
-		return errors.New("message and field must be declared in the same scope")
+	// disabled for protobufjs
+	//case fd.FullName().Parent() != md.FullName().Parent():
+	//	return errors.New("message and field must be declared in the same scope")
 	// disabled for protobufjs
 	//case md.Name() != protoreflect.Name(strs.MapEntryName(string(fd.Name()))):
 	//	return errors.New("incorrect implicit map entry name")
